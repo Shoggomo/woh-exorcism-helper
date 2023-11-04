@@ -1,5 +1,5 @@
 import {Actions, Combination} from "../Actions.ts";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 
 export interface GuessCombinationHook {
     nextGuess: Actions[] | null
@@ -40,10 +40,6 @@ export const useGuessCombination = (): GuessCombinationHook => {
     const [hint, setHint] = useState<Actions[]>([]);
     const [error, setError] = useState<string | null>(null);
     const nextGuess = possibilities.length > 0 ? possibilities[0] : null;
-
-    useEffect(() => {
-        console.log('possibilities', possibilities.length)
-    }, [possibilities])
 
     const evaluateGuess = (correctCount: number) => {
         const newPossibilities = possibilities.filter(p => countEqual(p, nextGuess || []) === correctCount);
