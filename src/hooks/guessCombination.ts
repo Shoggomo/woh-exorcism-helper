@@ -1,16 +1,16 @@
 import {Actions, Combination} from "../Actions.ts";
 import {useState} from "react";
+import {config} from "../config.ts";
 
 export interface GuessCombinationHook {
     nextGuess: Actions[] | null
     hint: Actions[]
+    possibleCombinations: Combination[]
     error: string | null
     evaluateGuess: (correctCount: number) => void
     setHint: (hint: Actions[]) => void
     reset: () => void
 }
-
-export const COMBINATION_LENGTH = 5;
 
 function countEqual(combination1: Actions[], combination2: Actions[]) {
     return combination1.reduce(
@@ -36,7 +36,7 @@ function generateAllPossibilities(length: number): Combination[] {
 }
 
 export const useGuessCombination = (): GuessCombinationHook => {
-    const [possibilities, setPossibilities] = useState<Combination[]>(generateAllPossibilities(COMBINATION_LENGTH));
+    const [possibilities, setPossibilities] = useState<Combination[]>(generateAllPossibilities(config.combinationLength));
     const [hint, setHint] = useState<Actions[]>([]);
     const [error, setError] = useState<string | null>(null);
     const nextGuess = possibilities.length > 0 ? possibilities[0] : null;
@@ -65,7 +65,7 @@ export const useGuessCombination = (): GuessCombinationHook => {
     }
 
     const reset = () => {
-        setPossibilities(generateAllPossibilities(COMBINATION_LENGTH));
+        setPossibilities(generateAllPossibilities(config.combinationLength));
         setHint([]);
         setError(null);
     }
@@ -74,6 +74,7 @@ export const useGuessCombination = (): GuessCombinationHook => {
         nextGuess: nextGuess,
         hint,
         error,
+        possibleCombinations: possibilities,
         reset,
         evaluateGuess: evaluateGuess,
         setHint: updateHint
